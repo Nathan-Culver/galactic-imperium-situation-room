@@ -20,4 +20,4 @@ Original map geography, government names, unit names, and finite command allocat
 
 ## Verification
 
-58 engine tests pass: 28 prior alpha tests, 5 atlas tests, 12 combat tests, 12 campaign tests, and a simulation test that runs three seeded solo campaigns for up to twenty rounds or victory. Automated checks are evidence for those tested behaviors, not proof of complete source-rule parity.
+66 engine tests pass: 28 prior alpha tests, 5 atlas tests, 12 combat tests, 17 campaign tests, 3 touch-zoom geometry tests, and a simulation test that runs three seeded solo campaigns for up to twenty rounds or victory. Automated checks are evidence for those tested behaviors, not proof of complete source-rule parity.
