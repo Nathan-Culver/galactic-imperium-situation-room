@@ -44,6 +44,6 @@ This is a playable alpha, not a verified reproduction of every rule in its board
 
 ## Galactic operational update · v0.2.0
 
-The main game now includes fleet-order commitment, fuel-bid initiative, convoy routes and interdiction, finite shipyard capacity and delayed deployment, transit relays, mutual transit and allied liberation, imperial war stress and recovery, and galactic touch zoom. See [the operational rules](docs/GALACTIC-OPERATIONS.md) for exact costs, timing, and limits. Existing saves preserve their forces, resources, and ongoing invasions.
+The main game now includes fleet-order commitment, energy-bid initiative, convoy routes and interdiction, finite shipyard capacity and delayed deployment, transit relays, mutual transit and allied liberation, imperial war stress and recovery, and galactic touch zoom. See [the operational rules](docs/GALACTIC-OPERATIONS.md) for exact costs, timing, and limits. Existing saves preserve their forces, resources, and ongoing invasions.
 
 The separate [world-scale province campaign](full/campaign.html) is playable with device saves. It is not yet connected to the main game's invasion resolution. Complete source-system parity and the remaining expanded political catalogs are still unfinished. This release must not be described as the complete combined game.

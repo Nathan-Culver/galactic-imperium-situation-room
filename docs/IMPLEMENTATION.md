@@ -7,9 +7,9 @@ This document distinguishes working mechanics from the longer-term full-preserva
 - Responsive mobile-first interface; five main workspaces; touch and keyboard hex selection.
 - Seeded 37-sector modular axial hex galaxy; frontier discovery; inhabited and uninhabited worlds.
 - Three civilizations: human-controlled Meridian Accord and two AI rivals.
-- Money, science, materials, fuel, reserves, command actions, upkeep, and production.
+- Money, science, materials, energy, reserves, command actions, upkeep, and production.
 - Eight technologies; five-slot fleet blueprint with weapons, shielding, transport, and research prerequisites.
-- Fleet construction, embarkation, range limits, transport loss, fuel costs, and seeded space encounters.
+- Fleet construction, embarkation, range limits, transport loss, energy costs, and seeded space encounters.
 - Defended worlds cannot be colonized directly. Orbital access and transported ground forces are required for invasion.
 - Persistent 19-region planetary campaigns, simultaneous committed orders, ground command limits, ports, capital, industry, defense positions, strategic strikes, supply raids, morale, reinforcement, withdrawal, and occupation.
 - Nine purchasable surface unit identities. Combat currently uses an abstract formation system rather than the full differentiated unit rules.
