@@ -1,30 +1,21 @@
-# Verification record
+# Verification record — v0.3.1
 
-## Automated rules checks
+123 automated tests pass. Coverage includes galactic command conservation, seeded maps, operations, space and surface save round-trips, command stacks, air/surface combat, pinning, transports, convoy raids, production, bombing, neutral trading, morale, local logistics, linked invasion settlement and compatibility with older campaigns.
 
-28 Node.js tests pass. Coverage includes seeded galaxy generation, unique sector names, immutable failed commands, defended-world invasion requirements, transport conservation and capacity, persistent campaigns, secret order commitment, order replacement, successful planetary conquest, withdrawal, research prerequisites, blueprint limits, strategic priorities, optional secondary participation, resource-conserving trade, treaty restrictions and expiry, nonrepeatable public and private scoring, validated save round-trips, deterministic resolution, malformed save rejection, AI development, difficulty settings, and campaign completion.
+Module validation checked 20 JavaScript files and 49 relative imports: no missing files or unversioned module imports. Main application and campaign UI syntax checks pass.
 
-Syntax checks pass for app.js, engine.js, ai-worker.js, and sw.js.
+## Published browser checks
 
-## Browser interaction checks
-
-Tested on the published GitHub Pages origin through the browser interface:
-
-- Initial command screen renders.
-- Strategic priority selection changes campaign resources.
-- Troops embark, fleet moves, invasion launches, and planetary workspace opens.
-- A ground order is queued and a complete round resolves, including AI actions and two surface operations.
-- Local save slot creation succeeds.
-- Export creates a JSON file on the device.
-- The exported file imports successfully and the restored campaign survives a page reload.
-- All five workspaces fit a 320 px viewport without document-level horizontal overflow.
-- The 390 px phone layout provides bottom navigation and stacked panels.
-- No console errors or warnings were reported during these interactions.
+- A separate practice save was used; the existing campaign was preserved.
+- Embarked eight cohorts, committed a fleet move, resolved a galactic round and launched an invasion through normal controls.
+- Opened the linked 127-hex planet; verified the surface roster and initial resource package.
+- Completed two operational cycles through economy, planning, movement, combat, refit, morale and production.
+- Verified the two-cycle gate, returned to the galaxy, and confirmed operational round three persisted.
+- Resolved the next galactic round and verified exactly two further operational cycles opened.
+- Observed phone document width 375px and scroll width 375px, with no document overflow. The world map scrolls within its own panel.
+- Reloaded the original campaign and confirmed round two, resources (10 credits, 11 science, 19 materials, 11 energy) and its existing invasion remained intact.
+- An initial mixed-cache startup error was found and corrected by versioning the full module graph. No subsequent startup error was observed on v0.3.1.
 
 ## Limits
 
-Offline reopening is implemented by a service worker but has not been verified through an actual disconnected-network session. Long-term browser eviction, all mobile operating-system download behaviors, installation on every browser, and full source-board-game rule fidelity have not been verified. See IMPLEMENTATION.md for the larger mechanics backlog.
-
-## v0.2.0 verification
-
-87 automated tests pass. New coverage includes operation commitments and cancellation refunds, initiative escrow, delayed construction, yard damage and capture, shipping floors, escort protection, relief, transit, relays, save hardening, and solo campaign completion with the new rules. The phone interface was checked at an observed 375px document width without overflow; deployed browser checks verified bid edits, movement queuing, and cancellation refunds. Physical multi-touch testing remains outstanding.
+Tests do not establish full source-rule parity or overall strategic balance. Four additional all-AI world-map simulations across climates completed with defending victories; they validate execution and saves, not balanced invasions. Physical multitouch, disconnected-network reopening, browser storage eviction and all mobile file-download behaviors remain unverified. Complete combined campaigns with every intended system are unavailable because the full ruleset is unfinished; see IMPLEMENTATION.md.

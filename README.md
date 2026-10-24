@@ -19,12 +19,12 @@ node --test tests/*.test.mjs
 ## Play
 
 1. Adopt a strategic priority.
-2. At Meridian Prime, embark troops. Move the fleet to adjacent Pelagos.
-3. Launch an invasion. Open Theatres.
-4. Select the friendly formation at the port, select Advance, then select an adjacent hex toward the capital.
-5. Resolve the round. Rival civilizations act and two surface operations execute.
+2. At Meridian Prime, embark troops. Plot the fleet move to adjacent Pelagos and resolve the galactic round.
+3. Launch an invasion. Open Theatres, then Open province campaign.
+4. Select command stacks, plot routes on the world map, and seal operational orders.
+5. Complete two operational cycles, then return to the galaxy and resolve its round.
 6. Continue the campaign, research, reinforce, negotiate, and pursue mandates.
-7. Hold the capital for two surface operations and defeat resistance to establish occupation.
+7. Secure opposing regional capitals to win the surface campaign. Galactic resolution then establishes occupation.
 
 Each new round refreshes five galactic actions. Surface orders have a separate per-campaign limit. Research and fleet refits compete with construction and movement for actions. Final prestige includes earned points, secure planets, and technology.
 
@@ -47,3 +47,4 @@ This is a playable alpha, not a verified reproduction of every rule in its board
 The main game now includes fleet-order commitment, energy-bid initiative, convoy routes and interdiction, finite shipyard capacity and delayed deployment, transit relays, mutual transit and allied liberation, imperial war stress and recovery, and galactic touch zoom. See [the operational rules](docs/GALACTIC-OPERATIONS.md) for exact costs, timing, and limits. Existing saves preserve their forces, resources, and ongoing invasions.
 
 The separate [world-scale province campaign](full/campaign.html) is playable with device saves. It is not yet connected to the main game's invasion resolution. Complete source-system parity and the remaining expanded political catalogs are still unfinished. This release must not be described as the complete combined game.
+

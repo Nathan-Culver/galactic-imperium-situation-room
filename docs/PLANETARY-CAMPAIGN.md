@@ -1,23 +1,13 @@
-# Planetary campaign development build
+# Planetary campaign — v0.3.1 development build
 
-The world-scale operational campaign is available at `full/campaign.html`. It has a separate version 2 save format and local storage key; the galactic alpha remains at the site root.
+New galactic invasions open linked 127-hex world maps. From Theatres, choose Open province campaign. Complete two operational cycles, then return to the galaxy and resolve its round. Planetary ownership changes only after operational victory is settled. Existing small-map invasions continue under their original rules.
 
-## Implemented and reachable
+Linked campaigns save into the parent galactic autosave; Export galaxy save includes both layers. Revision checks protect against stale tabs. Unsealed movement drafts recover on reload when the saved operational revision still matches. Standalone 61-, 91- and 127-hex campaigns at full/campaign.html retain their independent save.
 
-- Seeded 61, 91, and 127-hex worlds, land provinces, sea regions, up to six regional governments plus an expedition, capitals, resource incomes, industry, rail networks, ports, neutral enclaves, convoy markers, and controlled passages.
-- Finite category command pools, eight-unit command stacks, splitting/merging, individual combat stances, sealed movement plans, initiative preferences, all-paid fuel bids, and seeded tie breaks.
-- Adjacent land movement, continuous friendly rail movement, two-region aircraft/naval movement, transports, passage restrictions, category pinning, and forced command splits.
-- Seven operational phases. Color-dice air and surface combat, once-per-round hotspot battles, force advantage, escort protection, submersible escape, garrisons, strategic raids, port advantage, and repair costs. Standard and Quick Battle resolution are available at campaign creation.
-- Ground-only territorial captures, allied liberation, strategic-value stress, medals, homeland disruption, delayed paid production, industry and capacity constraints, aircraft return, infrastructure repair, civilian goods, and collapse.
-- Solo opponents issue legal orders and commission units. Campaign victory checks opposing capitals and surviving coalitions.
-- Device autosave, previous-state backup, JSON export/import, persistent battle logs, mobile map pan/zoom, keyboard province selection.
+The seven phases are economy, planning, movement, combat, refit, morale and production. Commands have finite tokens and up to eight units. Ground, air and naval units use distinct movement and combat rules. Provinces carry control, income, strategic value, industry, rail edges, ports, damage and capitals. Sea regions contain convoys and controlled passages.
 
-## Still required for the complete game
+Use Orders to seal movement plans and bid energy for initiative preferences. During combat preparation, select convoy targets and bombing priorities. During refit, set air returns. In morale, choose spending caps or bank goods and medals. In production, trade the offered resource with accessible neutral enclaves, commission units, buy civilian goods and optionally repair one bomb marker per government for nine alloy. Builds normally deploy in next-round refit.
 
-This is an operational development build, not the complete combined ruleset. The planetary engine is not yet connected to galaxy invasions. The root galactic alpha retains its earlier simplified mechanics. Pending work includes the full galactic engine and component catalogs, all six approved political additions, convoy-raid target controls and resolution, scenario-specific armistice/mobilization rules, the separate Quick Play variant, human-selectable per-batch hit/repair policies, carrier launch destination controls, full save validation hardening, and source-component coverage audits.
+The galactic layer can deliver resources one-for-one: energy to local energy, materials to alloy, credits to materiel. Each delivery uses one action. Reinforcements must already be embarked in the orbital fleet and land at a controlled coast; they cost one energy and one action. Capture industry and provinces to increase local production.
 
-Original map geography, government names, unit names, and finite command allocations are adaptation values. The project does not bundle source artwork or rulebook files.
-
-## Verification
-
-66 engine tests pass: 28 prior alpha tests, 5 atlas tests, 12 combat tests, 17 campaign tests, 3 touch-zoom geometry tests, and a simulation test that runs three seeded solo campaigns for up to twenty rounds or victory. Automated checks are evidence for those tested behaviors, not proof of complete source-rule parity.
+This is not the complete combined ruleset. Remaining work includes full galactic mechanics/catalogs, expanded politics, operational scenario victory functions, separate Quick Play, several optional rules and additional human combat decisions. Original maps, government identities, names and setup values are adaptations; historical source artwork and rulebooks are not included.
