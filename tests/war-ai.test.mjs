@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createCampaign,advanceCampaign,submitPlan,validateCampaign} from '../full/war-engine.js';
+import {generateAtlas,createExpedition,landingZones} from '../full/atlas.js';
+import {planOperationalAI,produceOperationalAI} from '../full/war-ai.js';
+test('solo AI can operate every phase for twenty rounds without invalid state',()=>{for(const seed of ['long-a','long-b','long-c']){const atlas=generateAtlas(seed,{size:'regional',polityCount:3});let s=createCampaign(seed,{atlas:createExpedition(atlas,{landing:landingZones(atlas)[0].id})});let steps=0;while(s.round<=20&&!s.winner&&steps++<150){if(s.phase==='planning')for(const p of s.polities.filter(p=>!p.collapsed))s=submitPlan(s,p.id,planOperationalAI(s,p.id));if(s.phase==='production')for(const p of s.polities.filter(p=>!p.collapsed))s=produceOperationalAI(s,p.id);s=advanceCampaign(s);validateCampaign(s);}assert.ok(s.round>20||s.winner);assert.ok(s.events.some(e=>e.type==='capture'));}});

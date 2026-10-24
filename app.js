@@ -27,7 +27,7 @@ function render(){
  ${state.result?`<div class="result-banner">${icon('target')}<div><strong>${faction(state,state.result.winner).name} prevails</strong><p>Final prestige: ${state.result.ranking.map(r=>`${esc(faction(state,r.id).short)} ${r.score}`).join(' · ')}. Your campaign is saved.</p></div>${btn('New campaign','new',{primary:true})}</div>`:''}
  ${view==='galaxy'?galaxyView():view==='planets'?planetsView():view==='civilization'?civilizationView():view==='diplomacy'?diplomacyView():journalView()}
  <footer class="command-footer"><div>${icon('orders')}<span><strong>${f.actions} command actions</strong><small>${active.length} active theatre${active.length===1?'':'s'} · ${f.reserves} reserve cohorts</small></span></div><button class="btn primary resolve" data-action="resolve" ${busy||state.result?'disabled':''}>${busy?'Resolving…':'Resolve round'} ${icon('arrow')}</button></footer>
- <div class="build-note">Original sci-fi rules · Playable alpha · <button data-action="scope">Development & rules coverage</button></div>
+ <div class="build-note">Original sci-fi rules · Playable alpha · <button data-action="scope">Development & rules coverage</button> · <a href="./full/campaign.html?v=2">New planetary campaign</a></div>
  </main><nav class="mobile-nav" aria-label="Mobile navigation">${navs.map(([id,label,i])=>`<button data-action="view" data-view="${id}" class="${view===id?'active':''}" ${view===id?'aria-current="page"':''}>${icon(i)}<span>${id==='civilization'?'Empire':label}</span></button>`).join('')}</nav></div>`;
  bindMap();
 }
