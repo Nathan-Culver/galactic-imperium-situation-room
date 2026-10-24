@@ -28,7 +28,7 @@ export function assignColorBatch(battle,attackerSide,results,stage,options={}){
 }
 export function forceAdvantage(battle){const category=battle.regionType==='sea'?'naval':'ground';const types=[0,1].map(side=>new Set(battle.units.filter(u=>u.side===side&&unitOperational(u)&&WAR_UNITS[u.type].category===category).map(u=>u.type)).size);return types[0]===types[1]?null:types[0]>types[1]?0:1;}
 export function stageDice(battle,side,stage,quick=false){
- let total=0;for(const u of battle.units.filter(u=>u.side===side&&unitOperational(u)&&['air',battle.regionType==='sea'?'naval':'ground'].includes(WAR_UNITS[u.type].category))){const v=quick?QUICK_VALUES[battle.regionType][u.type]||{air:0,surface:0}:unitStance(u,battle.regionType);total+=u.type==='strike'&&u.stance==='strategic'&&stage==='surface'?0:v[stage]||0;}
+ let total=0;for(const u of battle.units.filter(u=>u.side===side&&unitOperational(u)&&['air',battle.regionType==='sea'?'naval':'ground'].includes(WAR_UNITS[u.type].category))){const v=quick?QUICK_VALUES[battle.regionType][u.type]||{air:0,surface:0}:unitStance(u,battle.regionType);total+=battle.regionType==='land'&&u.type==='strike'&&u.stance==='strategic'&&stage==='surface'?0:v[stage]||0;}
  if(stage==='surface'&&battle.regionType==='sea'&&battle.portAdvantages?.[side]&&combatUnits(battle,side,'surface').length)total+=2;
  let cap=30;if(stage==='surface'&&battle.forceAdvantageCap&&battle.forceAdvantage!==null&&battle.forceAdvantage!==side){const category=battle.regionType==='sea'?'naval':'ground';const distinct=who=>new Set(battle.units.filter(u=>u.side===who&&unitOperational(u)&&WAR_UNITS[u.type].category===category).map(u=>u.type)).size;cap=distinct(1-side)-distinct(side)>=2?10:20;}return Math.min(cap,total);
 }

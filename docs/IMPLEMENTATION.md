@@ -1,50 +1,33 @@
-# Implementation status — v0.1 playable alpha
+# Implementation status — v0.3.0 development build
 
-This document distinguishes working mechanics from the longer-term full-preservation requirement. A runnable first build is not evidence that every Eclipse or War Room rule has been implemented. Exact source-rule completeness has not been audited or achieved.
+The full adaptation is not complete. This release connects the world-scale planetary engine to new galactic invasions. Existing small-map campaigns remain playable under their original rules. Names, map layouts, graphics, and setting are original adaptations.
 
-## Working
+## Working in this release
 
-- Responsive mobile-first interface; five main workspaces; touch and keyboard hex selection.
-- Seeded 37-sector modular axial hex galaxy; frontier discovery; inhabited and uninhabited worlds.
-- Three civilizations: human-controlled Meridian Accord and two AI rivals.
-- Money, science, materials, energy, reserves, command actions, upkeep, and production.
-- Eight technologies; five-slot fleet blueprint with weapons, shielding, transport, and research prerequisites.
-- Fleet construction, embarkation, range limits, transport loss, energy costs, and seeded space encounters.
-- Defended worlds cannot be colonized directly. Orbital access and transported ground forces are required for invasion.
-- Persistent 19-region planetary campaigns, simultaneous committed orders, ground command limits, ports, capital, industry, defense positions, strategic strikes, supply raids, morale, reinforcement, withdrawal, and occupation.
-- Nine purchasable surface unit identities. Combat currently uses an abstract formation system rather than the full differentiated unit rules.
-- Two surface operations per galactic round; ground wars continue over multiple rounds.
-- Three assembly proposals, votes, expiring laws, nonaggression agreements, reparations, trade, and four strategic priorities.
-- Four one-time public mandates, one private ambition, optional secondary participation, two bounded interventions, prestige scoring, campaign-length settings, and final results.
-- Background-worker AI planning with a main-thread fallback.
-- Autosaves, rolling backup, three manual slots, file export/import, version and shape validation, settings, and tutorial.
-- Dependency-free static hosting, relative URLs, offline service-worker cache, and install manifest.
+- Mobile-first solo galaxy, seeded exploration, three civilizations, resources, fleet construction, research, treaties, assembly votes, objectives, scoring and campaign results.
+- Galactic fleet commitments, all-paid initiative bids, delayed shipbuilding, shipping disruption, transit relays, mutual transit, allied liberation and bounded imperial war stress.
+- New invasions create persistent 127-hex planets: territorial governments, provinces, sea regions, ports, industry, rail edges, passages, neutral enclaves, convoys and capitals.
+- Linked surface campaigns share the galactic autosave and export. Two operational cycles are required per galactic round; AI-only invasions resolve automatically. A human defender commands their regional coalition.
+- Seven operational phases, finite command pools, eight-unit stacks, sealed movement plans, initiative preferences, pinning, rail movement, embarkation, air return and differentiated ground/air/naval combat.
+- Standard and Quick Battle resolution, stance values, colored dice, damage, repairs, submarine escape, garrisons and force advantage. Quick Battle is distinct from the unimplemented Quick Play variant.
+- Convoy targeting and wild-result policy, starting-defense eligibility, coastal/ocean liability, resource losses, once-per-round raids and optional casualty stress.
+- Strategic bombing destroys matching queued units, drains resources within current province income limits, or damages infrastructure. Standing priorities select construction/resources/infrastructure and wild results. Bomber batches resolve sequentially.
+- Captured queues change ownership; friendly contested industry remains usable. Optional infrastructure repair costs nine alloy, once per government during production. Mobilization requires an icon or industry; nonindustrial mobilization ignores bombs.
+- Neutral trade occurs in production, respects offered goods, alignment, allied land adjacency, sea access and disruption restrictions.
+- Globally sequenced morale, configurable spending limits, optional one-zone recovery, weighted desertion casualties and end-round collapse. Goods and medals can be banked.
+- Orbital resource delivery converts energy/alloy/materiel one-for-one from galactic energy/materials/credits. Embarked cohorts can land at a controlled coast for one energy and one galactic action. No troops are created by landing.
+- Device autosave/backup, manual galactic slots, JSON import/export, linked-save revision checks, draft movement-order recovery and offline shell caching.
 
-## Partial or awaiting full design implementation
+## Still unfinished
 
-- Full rule-by-rule and component-by-component preservation audit for both base games and included variants.
-- Eclipse-derived action economy, influence/population tracks, technology-market scarcity, every hull and ship component, complete space-combat timing, discovery effects, diplomacy/reputation systems, and source-equivalent scenarios.
-- War Room-derived complete phase sequence, resource trading and initiative bidding, national command structures, full unit-specific targeting and postures, air and maritime resolution, detailed transport rules, convoy routes, stress thresholds, recovery and civilian spending, industrial damage procedures, and original-equivalent optional rules.
-- Physical component functions need individual traceability records. The alpha's original maps and rosters are not evidence that all functions have equivalents.
-- Supply is a campaign stockpile affected by port and industrial control; it is not yet a path-traced network.
-- Unit assets are represented, but domain restrictions and differentiated combat remain incomplete.
-- Formal agreements are limited to nonaggression and material trades; transit, basing, settlements, and transferable commitments are planned.
-- Priorities grant immediate benefits and optional paid secondary opportunities; exclusive drafting is planned.
-- Expanded private objective content, deeper faction powers, full intelligence systems, and expanded intervention content are planned.
-- AI is a deterministic heuristic opponent, not yet a fully coordinated strategic planner. No trained models or online inference are used.
-- Narrative scenario campaigns, achievements, replay scrubbing, larger configurable galaxies, and multiplayer are planned.
+- Full Eclipse-derived influence/action and population tracks, scarce technology market, all hulls and parts, discoveries, reputation/diplomacy, complete space combat and scoring details. The current galaxy still uses eight technologies, a universal blueprint and simplified space combat.
+- Complete operational scenario objectives, full Quick Play, postmovement carrier launch decisions, execution-time path/cancellation choices, initiative-selected battle order, per-batch human hit/repair decisions and several optional operational variants.
+- Complete exclusive strategy draft, objective catalog, tradable commitments, permanent laws, diplomatic faction powers and intervention effects. Research catalogs are specifications, not implemented mechanics.
+- Exact historical component equivalence has not been established. Procedural geography and original values replace historical maps and national setups.
+- Campaign balance across map seeds and the combined game remains under development. An expedition needs sufficient force and logistics; local defenders mobilize from their provinces.
 
-## Architecture and browser limits
+## Validation limits
 
-- engine.js: serializable game state and pure command/round transitions.
-- ai-worker.js: off-main-thread planning; app retains authority over state commits.
-- app.js: event delegation, original SVG maps, accessible dialogs, local persistence, file operations.
-- styles.css: mobile layout first; tablet/desktop enhance the same controls.
-- sw.js: same-origin offline app shell. Network-first updates; cached fallback.
-- No WebGL, continuous rendering loop, external fonts, analytics, backend, or API keys.
-- Maps and histories are bounded to keep rendering, saves, and AI work small.
-- Export/import uses standard Blob downloads and file inputs for mobile compatibility. Browser sandboxing means a website cannot silently choose arbitrary device folders.
+Automated tests cover legal transitions, conservation, invalid saves/actions, combat procedures and linked settlement. Forced victory tests verify settlement only. These checks do not certify source-game parity, strategic balance, physical multitouch behavior or every full-length combined campaign.
 
-## Release acceptance still outstanding
-
-Full-mechanism fidelity requires a source audit and a much larger rules/content release. Public multiplayer would additionally require authoritative hosting, authentication choices, reconnects, and hidden-state isolation. The current static release is solo only.
+The game is a static, dependency-free browser app. No backend, account, API keys or continuous simulation. Local save files use standard browser downloads and file inputs. Browser storage can be cleared by the user or browser; export a file to retain a separate copy.

@@ -1,5 +1,5 @@
 // Derive actionable choices from the same engine validation used to execute them.
-import {command,faction,colonies,fleets,TECHS} from './engine.js?v=0.2.3';
+import {command,faction,colonies,fleets,TECHS} from './engine.js?v=0.3.0';
 export function actionAvailability(state,action){if(state.result)return{available:false,reason:'This campaign has concluded.'};try{command(state,action);return{available:true,reason:''};}catch(error){return{available:false,reason:error.message};}}
 export function spendingChoices(state){const f=faction(state),items=[];const add=(label,category,action,cost)=>items.push({label,category,action,cost,...actionAvailability(state,action)});
  for(const x of colonies(state)){add(`Queue vessel at ${x.name}`,'Production',{type:'build',sector:x.id,unit:'ship'},`${4+f.blueprint.weapon+f.blueprint.shield} materials + 1 credit`);add(`Recruit four cohorts at ${x.name}`,'Production',{type:'build',sector:x.id,unit:'troops'},'3 materials + 1 credit');if(x.damage)add(`Repair ${x.name}`,'Production',{type:'build',sector:x.id,unit:'repair'},'2 materials');}

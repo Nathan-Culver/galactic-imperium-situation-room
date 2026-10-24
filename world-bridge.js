@@ -22,3 +22,13 @@ export function persistSurfaceAtlas(world,c){const atlas=copy(c.operational.atla
 
 export function campaignCycleSummary(c){return {cycle:c.operational.round-1,targetCycles:c.operationalTargetRound-1,phase:c.operational.phase,attacking:surfaceUnits(c,'invasion').length,defending:surfaceUnits(c,'defense').length};}
 export function validateWorldCampaign(c){requireRule(c.operational&&Number.isSafeInteger(c.operationalRevision)&&c.operationalRevision>=0&&Number.isSafeInteger(c.operationalTargetRound)&&c.operationalTargetRound>=3,'Invalid linked operational campaign.');validateCampaign(c.operational);}
+
+export function reinforceWorldCampaign(c,empireId,provinceId,troops){
+ requireRule(!c.operational.winner,'This planetary campaign has concluded.');
+ const controlled=controlledRegionalCommands(c,empireId),r=c.operational.atlas.regions.find(r=>r.id===provinceId);
+ requireRule(r?.kind==='land'&&r.port&&controlled.includes(r.controller),'Choose a coastal province controlled by your regional command.');
+ requireRule(Number.isSafeInteger(troops)&&troops>0&&troops<=54,'Choose a valid number of embarked cohorts.');
+ const originalPhase=c.operational.phase,originalRound=c.operational.round;let op=copy(c.operational);op.phase='economy';op.round=1;
+ for(let n=0;n<troops;n++)op=deployForSetup(op,r.controller,r.id,'cohort');
+ op.phase=originalPhase;op.round=originalRound;c.operational=op;c.operationalRevision++;
+}
