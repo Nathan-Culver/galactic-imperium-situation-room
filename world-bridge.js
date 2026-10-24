@@ -1,8 +1,8 @@
-import {generateAtlas,createExpedition,landingZones} from './full/atlas.js';
-import {createCampaign,deployForSetup,advanceCampaign,submitPlan,validateCampaign,polity} from './full/war-engine.js';
-import {planOperationalAI,produceOperationalAI} from './full/war-ai.js';
-import {WAR_UNITS} from './full/war-data.js';
-import {copy,requireRule} from './full/util.js';
+import {generateAtlas,createExpedition,landingZones} from './full/atlas.js?v=0.3.1';
+import {createCampaign,deployForSetup,advanceCampaign,submitPlan,validateCampaign,polity} from './full/war-engine.js?v=0.3.1';
+import {planOperationalAI,produceOperationalAI} from './full/war-ai.js?v=0.3.1';
+import {WAR_UNITS} from './full/war-data.js?v=0.3.1';
+import {copy,requireRule} from './full/util.js?v=0.3.1';
 const surfaceUnits=(c,alliance)=>c.operational.commands.filter(x=>polity(c.operational,x.owner).alliance===alliance).flatMap(x=>x.units);
 export function controlledRegionalCommands(c,empireId){if(!c.operational)return[];const alliance=c.attacker===empireId?'invasion':c.defender===empireId?'defense':null;return c.operational.polities.filter(p=>p.alliance===alliance&&!p.collapsed).map(p=>p.id);}
 export function makeWorldCampaign(galaxy,world,attacker,troops){

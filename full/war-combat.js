@@ -1,5 +1,5 @@
-import {copy,die,requireRule,sum} from './util.js';
-import {WAR_UNITS,DEFAULT_STANCES,COLOR_FACES,HIT_ORDER,QUICK_VALUES,unitStance,unitAlive,unitOperational,unitRow,whiteVulnerable,WAR_RESOURCES} from './war-data.js';
+import {copy,die,requireRule,sum} from './util.js?v=0.3.1';
+import {WAR_UNITS,DEFAULT_STANCES,COLOR_FACES,HIT_ORDER,QUICK_VALUES,unitStance,unitAlive,unitOperational,unitRow,whiteVulnerable,WAR_RESOURCES} from './war-data.js?v=0.3.1';
 export function colorRoll(randomState,count){return Array.from({length:count},()=>COLOR_FACES[die(randomState,12)-1]);}
 export function combatUnits(battle,side,stage){return battle.units.filter(u=>u.side===side&&unitOperational(u)&&(stage==='air'?WAR_UNITS[u.type].category==='air':WAR_UNITS[u.type].category===(battle.regionType==='sea'?'naval':'ground')));}
 function rowEligible(units){return units.filter(u=>!units.some(v=>unitRow(v)===unitRow(u)&&v.damage>0&&unitAlive(v))||u.damage>0);}

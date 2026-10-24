@@ -1,6 +1,6 @@
-import {requireRule,atomic,event} from './util.js';
-import {WAR_UNITS} from './war-data.js';
-import {colorRoll} from './war-combat.js';
+import {requireRule,atomic,event} from './util.js?v=0.3.1';
+import {WAR_UNITS} from './war-data.js?v=0.3.1';
+import {colorRoll} from './war-combat.js?v=0.3.1';
 const getRegion=(s,id)=>s.atlas.regions.find(r=>r.id===id),getPolity=(s,id)=>s.polities.find(p=>p.id===id),coalition=(s,id)=>getPolity(s,id)?.alliance;
 const resourceColor={materiel:'yellow',alloy:'blue',fuel:'red'},colorResource={yellow:'materiel',blue:'alloy',red:'fuel'};
 export function convoyCargo(convoy){return convoy.silhouettes||{yellow:convoy.resource==='materiel'?convoy.value:0,blue:convoy.resource==='alloy'?convoy.value:0,red:convoy.resource==='fuel'?convoy.value:0};}

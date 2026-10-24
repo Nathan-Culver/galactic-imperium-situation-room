@@ -1,4 +1,4 @@
-import {seedNumber,random,hexDistance,hexKey,adjacentKeys,components,graphPath,requireRule,copy} from './util.js';
+import {seedNumber,random,hexDistance,hexKey,adjacentKeys,components,graphPath,requireRule,copy} from './util.js?v=0.3.1';
 const PREFIX=['Aster','Cael','Eri','Hal','Iri','Kel','Luma','Mera','Nara','Oro','Pela','Rhe','Sera','Tala','Uma','Vara','Wey','Xan','Yara','Zeph'];
 const SUFFIX=['dor','via','mere','th','ara','is','on','une','eth','ora','hold','reach','haven','fall','spire','port','vale','crest','ward','point'];
 const NATIVES=[{id:'n1',name:'Crown Directorate',color:'#ed7287',profile:'industrial'},{id:'n2',name:'Free Provinces',color:'#b49be9',profile:'standard'},{id:'n3',name:'Frontier Assembly',color:'#dfba79',profile:'minor'},{id:'n4',name:'Oceanic League',color:'#8cbde1',profile:'maritime'},{id:'n5',name:'Eastern Commonwealth',color:'#8ec49a',profile:'federation'},{id:'n6',name:'Highland Compact',color:'#d9a37b',profile:'mobilization'}];

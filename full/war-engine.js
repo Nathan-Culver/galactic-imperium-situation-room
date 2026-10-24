@@ -1,9 +1,9 @@
-import {resolveBombingRaids} from './war-bombing.js';
-import {snapshotConvoyGuards,resolveConvoyRaids} from './war-convoys.js';
-import {copy,requireRule,seedNumber,shuffle,graphPath,event,pay,add,sum,atomic} from './util.js';
-import {generateAtlas} from './atlas.js';
-import {WAR_UNITS,DEFAULT_STANCES,WAR_PROFILES,WAR_PHASES,CASUALTY_BANDS,WAR_RESOURCES} from './war-data.js';
-import {resolveOperationalBattle,resolveGarrison,colorRoll} from './war-combat.js';
+import {resolveBombingRaids} from './war-bombing.js?v=0.3.1';
+import {snapshotConvoyGuards,resolveConvoyRaids} from './war-convoys.js?v=0.3.1';
+import {copy,requireRule,seedNumber,shuffle,graphPath,event,pay,add,sum,atomic} from './util.js?v=0.3.1';
+import {generateAtlas} from './atlas.js?v=0.3.1';
+import {WAR_UNITS,DEFAULT_STANCES,WAR_PROFILES,WAR_PHASES,CASUALTY_BANDS,WAR_RESOURCES} from './war-data.js?v=0.3.1';
+import {resolveOperationalBattle,resolveGarrison,colorRoll} from './war-combat.js?v=0.3.1';
 const categories=['ground','air','naval'];
 export const region=(s,id)=>s.atlas.regions.find(r=>r.id===id);
 export const polity=(s,id)=>s.polities.find(p=>p.id===id);

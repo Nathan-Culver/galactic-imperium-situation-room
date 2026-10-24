@@ -1,6 +1,6 @@
-import {WAR_UNITS as OPERATIONAL_UNITS} from './full/war-data.js';
-import {makeWorldCampaign,worldCampaignReady,advanceAIWorldCampaign,worldSurvivors,persistSurfaceAtlas,validateWorldCampaign,controlledRegionalCommands,reinforceWorldCampaign} from './world-bridge.js';
-import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.2.3';
+import {WAR_UNITS as OPERATIONAL_UNITS} from './full/war-data.js?v=0.3.1';
+import {makeWorldCampaign,worldCampaignReady,advanceAIWorldCampaign,worldSurvivors,persistSurfaceAtlas,validateWorldCampaign,controlledRegionalCommands,reinforceWorldCampaign} from './world-bridge.js?v=0.3.1';
+import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.3.1';
 export const VERSION=1;
 export const FACTIONS=[
  {id:'p',name:'Meridian Accord',short:'ACCORD',color:'#5ed6ca',style:'Balanced explorers',bonus:'Scientific research costs 1 less.'},

@@ -1,6 +1,6 @@
-import {WAR_UNITS,WAR_RESOURCES} from './war-data.js';
-import {colorRoll} from './war-combat.js';
-import {atomic,requireRule,event} from './util.js';
+import {WAR_UNITS,WAR_RESOURCES} from './war-data.js?v=0.3.1';
+import {colorRoll} from './war-combat.js?v=0.3.1';
+import {atomic,requireRule,event} from './util.js?v=0.3.1';
 const resourceColors={yellow:'materiel',blue:'alloy',red:'fuel'};
 const choices=new Set(['auto','industry','resources','construction','miss','yellow','blue','green','red','white']);
 export function setBombingPolicy(state,owner,policy){return atomic(state,s=>{requireRule(['planning','combat','refit'].includes(s.phase),'Set raid priorities before combat resolves.');const p=s.polities.find(p=>p.id===owner&&!p.collapsed);requireRule(p&&choices.has(policy.priority)&&choices.has(policy.black),'Choose valid raid priorities.');p.bombingPolicy={priority:policy.priority,black:policy.black};});}
