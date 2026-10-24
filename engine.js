@@ -1,4 +1,4 @@
-import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.2.1';
+import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.2.2';
 export const VERSION=1;
 export const FACTIONS=[
  {id:'p',name:'Meridian Accord',short:'ACCORD',color:'#5ed6ca',style:'Balanced explorers',bonus:'Scientific research costs 1 less.'},
