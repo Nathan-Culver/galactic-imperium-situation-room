@@ -36,7 +36,7 @@ export const LAWS=[
  {id:'restraint',name:'Orbital restraint',desc:'Orbital bombardment is prohibited for the next round.'},
  {id:'exchange',name:'Scientific commons',desc:'Every civilization gains 2 science each upkeep.'}
 ];
-const NAMES=['Aster','Kestrel','Nacre','Solace','Varda','Pelagos','Eidolon','Talus','Meridian','Caelum','Tethra','Nim','Cinder','Halcyon','Vela','Sable','Auriga','Oriel','The Confluence','Ardent','Ilex','Thess','Eos','Caldera','Rime','Vesper','Osiris','Pyre','Lumen','Orison','Iskra','Neris','Thorne','Axiom','Haven','Corvus','Lyra'];
+const NAMES=['Aster','Kestrel','Nacre','Solace','Varda','Aureole','Eidolon','Talus','Meridian','Caelum','Tethra','Nim','Cinder','Halcyon','Vela','Sable','Auriga','Oriel','The Confluence','Ardent','Ilex','Thess','Eos','Caldera','Rime','Vesper','Osiris','Pyre','Lumen','Ravel','Iskra','Neris','Thorne','Axiom','Haven','Corvus','Lyra'];
 const BIOMES=['Oceanic','Temperate','Volcanic','Arid','Glacial'];
 export const distance=(a,b)=>(Math.abs(a.q-b.q)+Math.abs(a.r-b.r)+Math.abs(a.q+a.r-b.q-b.r))/2;
 export const clone=x=>structuredClone(x);
@@ -55,7 +55,7 @@ function spend(s,id='p'){const f=faction(s,id);if(f.actions<=0)fail('No command 
 function freshFleet(){return{ships:0,troops:0};}
 export function newGame(options={}){
  const seed=String(options.seed||'DAWN-042');
- const s={version:VERSION,id:Date.now().toString(36),name:String(options.name||'The first frontier').slice(0,60),seed,rng:hash(seed),round:1,maxRounds:[8,12,20].includes(Number(options.rounds))?Number(options.rounds):12,difficulty:options.difficulty||'standard',phase:'planning',priority:null,law:null,agenda:0,vote:null,interventions:['resupply','intel'],treaties:[],campaigns:[],factions:[],sectors:[],log:[],stats:{explored:0,battles:0,conquests:0},scored:[],result:null};
+ const s={version:VERSION,id:Date.now().toString(36),name:String(options.name||'The first frontier').slice(0,60),seed,rng:hash(seed),round:1,maxRounds:[8,12,20].includes(Number(options.rounds))?Number(options.rounds):12,difficulty:options.difficulty||'standard',phase:'planning',priority:null,law:null,agenda:0,vote:null,interventions:['resupply','intel'],offers:[],ambition:['exploration','science','fleet'][hash(seed)%3],treaties:[],campaigns:[],factions:[],sectors:[],log:[],stats:{explored:0,battles:0,conquests:0},scored:[],result:null};
  s.factions=FACTIONS.map((f,i)=>({...f,credits:14+(s.difficulty==='relaxed'&&!i?6:0),science:7,materials:14+(s.difficulty==='veteran'&&i?8:0),fuel:10+(s.difficulty==='relaxed'&&!i?6:0),reserves:9+(s.difficulty==='relaxed'&&!i?4:0),actions:5,tech:[],blueprint:{weapon:1,shield:0,transport:2},score:0,relations:0,priority:null}));
  let n=0;
  for(let q=-3;q<=3;q++)for(let r=-3;r<=3;r++)if(Math.abs(q+r)<=3){const inhabited=rand(s)>.26;s.sectors.push({id:`${q},${r}`,q,r,name:NAMES[n++],biome:BIOMES[Math.floor(rand(s)*BIOMES.length)],inhabited,garrison:inhabited?2+Math.floor(rand(s)*3):0,owner:null,orbit:null,occupation:0,income:{credits:1+Math.floor(rand(s)*2),science:1,materials:1+Math.floor(rand(s)*2)},fleets:{},revealed:false,discovered:false,damage:0});}
@@ -80,9 +80,10 @@ export function command(state,action,id='p'){
   if(f.priority)fail('A strategic priority is already committed this round.');const p=PRIORITIES.find(p=>p.id===action.id);if(!p)fail('Unknown strategic priority.');f.priority=p.id;
   if(p.id==='industry')f.materials+=4;if(p.id==='science')f.science+=3;if(p.id==='logistics'){f.fuel+=3;f.reserves+=3;}if(p.id==='diplomacy')f.credits+=4;
   // Secondary programs use paid, bounded benefits, once per other civilization.
-  if(p.id==='industry'||p.id==='science')for(const other of s.factions.filter(g=>g.id!==id&&g.credits>=2)){other.credits-=2;other[p.id==='industry'?'materials':'science']+=2;}
+  if(p.id==='industry'||p.id==='science')for(const other of s.factions.filter(g=>g.id!==id)){if(other.id==='p'){s.offers??=[];s.offers.push({id:id+'-'+p.id,resource:p.id==='industry'?'materials':'science',from:id});}else if(other.credits>=2){other.credits-=2;other[p.id==='industry'?'materials':'science']+=2;}}
   log(s,`${f.name} adopted ${p.name}.`,'politics');break;
  }
+ case 'follow':{const offer=(s.offers||[]).find(o=>o.id===action.id);if(!offer)fail('This secondary program is no longer available.');pay(f,{credits:2});f[offer.resource]+=2;s.offers=s.offers.filter(o=>o.id!==offer.id);log(s,`${f.name} joined a secondary program: +2 ${offer.resource}.`,'politics');break;}
  case 'explore':{
   if(!x)fail('Select a sector.');if(id==='p'&&!x.revealed)fail('Explore along a visible frontier.');if(x.discovered)fail('This sector has already been surveyed.');
   if(!s.sectors.some(y=>(y.owner===id||y.fleets[id]?.ships)&&distance(x,y)<=1))fail('Survey must be adjacent to a colony or fleet.');pay(f,{fuel:1});spend(s,id);x.discovered=true;
@@ -239,7 +240,7 @@ export function planAI(state){
  return plans;
 }
 export function endRound(state,plans=planAI(state)){
- let s=clone(state);if(s.result)return s;
+ let s=clone(state);if(s.result)return s;s.offers=[];
  for(const p of plans){try{s=command(s,p.action,p.id);}catch{/* Plans can become invalid after another civilization acts. */}}
  const law=LAWS[s.agenda];let yes=0,no=0;for(const f of s.factions){const votes=Math.max(1,colonies(s,f.id).length)+(f.priority==='diplomacy'?2:0);const supports=f.id==='p'?s.vote==='for':law.id==='restraint'?f.id==='v':true;if(f.id==='p'&&s.vote===null)continue;if(supports)yes+=votes;else no+=votes;}
  s.law=yes>no?law.id:null;log(s,`${law.name}: ${yes} for / ${no} against. ${s.law?'Motion carried.':'Motion failed.'}`,'politics');
@@ -248,6 +249,7 @@ export function endRound(state,plans=planAI(state)){
  s.treaties=s.treaties.filter(t=>t.until>=s.round+1);
  const pf=faction(s);const objectives=[['explorer',s.stats.explored>=3,2,'Frontier cartographer'],['scholar',pf.tech.length>=3,2,'Scientific ascendancy'],['conqueror',s.stats.conquests>=1,3,'A foothold among stars'],['diplomat',s.treaties.some(t=>t.parties.includes('p')),1,'Accord of civilizations']];
  for(const [id,met,points,name]of objectives)if(met&&!s.scored.includes(id)){s.scored.push(id);pf.score+=points;log(s,`Mandate completed: ${name}. +${points} prestige.`,'success');}
+ const ambition=s.ambition||'science';const ambitionMet=ambition==='exploration'?s.stats.explored>=6:ambition==='fleet'?fleets(s).reduce((n,x)=>n+x.fleets.p.ships,0)>=7:pf.tech.length>=5;if(ambitionMet&&!s.scored.includes('ambition')){s.scored.push('ambition');pf.score+=3;log(s,'Private ambition achieved. +3 prestige.','success');}
  for(const f of s.factions)f.score+=colonies(s,f.id).filter(x=>x.id==='0,0'&&!x.occupation).length;
  if(s.round>=s.maxRounds){const ranked=s.factions.map(f=>({id:f.id,score:f.score+colonies(s,f.id).filter(x=>!x.occupation).length*2+f.tech.length})).sort((a,b)=>b.score-a.score);s.result={winner:ranked[0].id,ranking:ranked};log(s,`${faction(s,ranked[0].id).name} leads the final council with ${ranked[0].score} prestige.`,'success');}
  else{s.round++;s.agenda=(s.agenda+1)%LAWS.length;s.vote=null;log(s,`Round ${s.round}: resources collected, commands refreshed. New assembly proposal available.`,'info');}
@@ -270,6 +272,8 @@ export function validateSave(value){
  for(const c of s.campaigns){if(typeof c.id!=='string'||typeof c.name!=='string'||!['p','r','v'].includes(c.attacker)||!['p','r','v','independent'].includes(c.defender)||!num(c.cycle,1000)||!num(c.capitalHeld,1000)||['a','d'].some(k=>!num(c.supply[k])||!num(c.morale[k],100)))fail('Invalid operational state.');const tids=new Set(c.tiles.map(t=>t.id));if(tids.size!==19)fail('Duplicate planetary regions.');for(const t of c.tiles)if(typeof t.id!=='string'||!Number.isInteger(t.q)||!Number.isInteger(t.r)||distance(t,{q:0,r:0})>2||!['a','d'].includes(t.owner)||!Number.isInteger(t.units)||!num(t.units,10000)||!t.assets||Object.entries(t.assets).some(([k,v])=>!UNITS.some(u=>u.id===k)||!Number.isInteger(v)||!num(v,10000)))fail('Invalid formation data.');for(const o of c.orders)if(!tids.has(o.from)||!tids.has(o.to)||!['a','d'].includes(o.side)||!['advance','defend','support','bombard','raid'].includes(o.type))fail('Invalid operational orders.');}
  if(s.law!==null&&!LAWS.some(l=>l.id===s.law))fail('Invalid galactic law.');if(s.vote!==null&&!['for','against'].includes(s.vote))fail('Invalid ballot.');
  if(s.result&&(!['p','r','v'].includes(s.result.winner)||!Array.isArray(s.result.ranking)||s.result.ranking.length!==3||s.result.ranking.some(r=>!['p','r','v'].includes(r.id)||!num(r.score))))fail('Invalid campaign result.');
+ if(s.offers!==undefined&&(!Array.isArray(s.offers)||s.offers.length>8||s.offers.some(o=>typeof o.id!=='string'||!['science','materials'].includes(o.resource)||!['r','v'].includes(o.from))))fail('Invalid secondary programs.');if(s.ambition!==undefined&&!['exploration','science','fleet'].includes(s.ambition))fail('Invalid private ambition.');
  return clone(s);
 }
 export function encodeSave(s){return JSON.stringify({format:'galactic-imperium',version:VERSION,savedAt:new Date().toISOString(),game:s},null,2);}
+

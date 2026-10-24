@@ -15,7 +15,7 @@ This document distinguishes working mechanics from the longer-term full-preserva
 - Nine purchasable surface unit identities. Combat currently uses an abstract formation system rather than the full differentiated unit rules.
 - Two surface operations per galactic round; ground wars continue over multiple rounds.
 - Three assembly proposals, votes, expiring laws, nonaggression agreements, reparations, trade, and four strategic priorities.
-- Four one-time public mandates, two bounded interventions, prestige scoring, campaign-length settings, and final results.
+- Four one-time public mandates, one private ambition, optional secondary participation, two bounded interventions, prestige scoring, campaign-length settings, and final results.
 - Background-worker AI planning with a main-thread fallback.
 - Autosaves, rolling backup, three manual slots, file export/import, version and shape validation, settings, and tutorial.
 - Dependency-free static hosting, relative URLs, offline service-worker cache, and install manifest.
@@ -29,8 +29,8 @@ This document distinguishes working mechanics from the longer-term full-preserva
 - Supply is a campaign stockpile affected by port and industrial control; it is not yet a path-traced network.
 - Unit assets are represented, but domain restrictions and differentiated combat remain incomplete.
 - Formal agreements are limited to nonaggression and material trades; transit, basing, settlements, and transferable commitments are planned.
-- Priorities grant immediate benefits; exclusive drafting and human choices about secondary participation are planned.
-- Private objectives, deeper faction powers, full intelligence systems, and expanded intervention content are planned.
+- Priorities grant immediate benefits and optional paid secondary opportunities; exclusive drafting is planned.
+- Expanded private objective content, deeper faction powers, full intelligence systems, and expanded intervention content are planned.
 - AI is a deterministic heuristic opponent, not yet a fully coordinated strategic planner. No trained models or online inference are used.
 - Narrative scenario campaigns, achievements, replay scrubbing, larger configurable galaxies, and multiplayer are planned.
 
