@@ -1,5 +1,6 @@
-const CACHE='galactic-imperium-v0.1.3';
-const FILES=['./','./index.html','./styles.css?v=0.1.3','./app.js?v=0.1.3','./engine.js?v=0.1.1','./ai-worker.js?v=0.1.1','./touch-map.js?v=0.1.3','./manifest.webmanifest','./assets/emblem.svg','./docs/IMPLEMENTATION.md'];
+const CACHE='galactic-imperium-v0.2.0';
+const FILES=['./','./index.html','./styles.css?v=0.2.0','./app.js?v=0.2.0','./engine.js?v=0.2.0','./ai-worker.js?v=0.2.0','./touch-map.js?v=0.2.0','./galaxy-operations.js?v=0.2.0','./manifest.webmanifest','./assets/emblem.svg','./docs/IMPLEMENTATION.md','./docs/GALACTIC-OPERATIONS.md','./full/campaign.html','./full/campaign-app.js?v=2','./full/styles.css?v=2','./full/war-engine.js','./full/war-combat.js','./full/war-data.js','./full/war-ai.js','./full/util.js','./full/atlas.js','./full/map-view.js'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('galactic-imperium-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;event.respondWith(fetch(event.request,{cache:'no-store'}).then(response=>{if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));}return response;}).catch(()=>caches.match(event.request)));});
+

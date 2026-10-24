@@ -1,3 +1,4 @@
+import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.2.0';
 export const VERSION=1;
 export const FACTIONS=[
  {id:'p',name:'Meridian Accord',short:'ACCORD',color:'#5ed6ca',style:'Balanced explorers',bonus:'Scientific research costs 1 less.'},
@@ -64,17 +65,19 @@ export function newGame(options={}){
  const home=homes[0];s.sectors.forEach(x=>x.revealed=distance(home,x)<=2);home.discovered=true;
  const frontier=neighbors(s,home).find(x=>!x.home);frontier.inhabited=true;frontier.garrison=2;frontier.name='Pelagos';frontier.biome='Oceanic';
  const center=s.sectors.find(x=>x.q===0&&x.r===0);center.name='The Confluence';center.inhabited=true;center.garrison=6;
+ if(options.operations)initializeGalacticOperations(s);
  log(s,'Command established at Meridian Prime. Survey the frontier, build your expedition, and secure a beachhead.','discovery');
  return s;
 }
 export function income(s,id='p'){
  const f=faction(s,id),cs=colonies(s,id);const result={credits:0,science:0,materials:0,upkeep:Math.ceil(cs.length/2)+Math.floor(fleets(s,id).reduce((n,x)=>n+x.fleets[id].ships,0)/5)};
- for(const x of cs){const m=x.occupation>0?.5:1;for(const k of ['credits','science','materials'])result[k]+=Math.max(0,Math.floor((x.income[k]-x.damage)*m));if(f.tech.includes('industry')&&!x.occupation)result.materials++;if(s.law==='reconstruction'&&x.occupation)result.credits+=2;}
- if(s.law==='exchange')result.science+=2;return result;
+ for(const x of cs){const m=x.occupation>0?.5:1;for(const k of ['credits','science','materials'])result[k]+=worldDeliveredYield(s,x,id,k,Math.max(0,Math.floor((x.income[k]-x.damage)*m)));if(f.tech.includes('industry')&&!x.occupation)result.materials+=worldDeliveredYield(s,x,id,'materials',1);if(s.law==='reconstruction'&&x.occupation)result.credits+=2;}
+ if(s.law==='exchange')result.science+=2;if(s.operationalRules&&stressZone(f)>=1)result.upkeep++;return result;
 }
 export function command(state,action,id='p'){
  const s=clone(state);if(s.result)fail('This campaign has concluded. Start a new campaign to play again.');const f=faction(s,id);const x=action.sector?sector(s,action.sector):null;
  if(!f)fail('Unknown civilization.');
+ if(galacticOperationAction(s,action,id))return s;
  switch(action.type){
  case 'priority':{
   if(f.priority)fail('A strategic priority is already committed this round.');const p=PRIORITIES.find(p=>p.id===action.id);if(!p)fail('Unknown strategic priority.');f.priority=p.id;
@@ -95,13 +98,13 @@ export function command(state,action,id='p'){
  }
  case 'build':{
   if(!x||x.owner!==id)fail('Build at one of your colonies.');if(x.occupation)fail('This world must stabilize before producing fleets.');const unit=action.unit||'ship';if(!['ship','troops','repair'].includes(unit))fail('Unknown production order.');
-  if(unit==='ship'){pay(f,{materials:4+f.blueprint.weapon+f.blueprint.shield,credits:1});spend(s,id);x.fleets[id]??=freshFleet();x.fleets[id].ships++;}
+  if(unit==='ship'&&s.operationalRules){queueShipConstruction(s,x,id);}else if(unit==='ship'){pay(f,{materials:4+f.blueprint.weapon+f.blueprint.shield,credits:1});spend(s,id);x.fleets[id]??=freshFleet();x.fleets[id].ships++;}
   if(unit==='troops'){pay(f,{materials:3,credits:1});spend(s,id);f.reserves+=4;}
   if(unit==='repair'){if(!x.damage)fail('Infrastructure is already intact.');pay(f,{materials:2});spend(s,id);x.damage=Math.max(0,x.damage-1);}
   log(s,`${f.name}: ${unit==='ship'?'new vessel commissioned':unit==='troops'?'4 cohorts recruited':'infrastructure repaired'} at ${x.name}.`,'production');break;
  }
  case 'load':{
-  const fl=x?.fleets[id];if(!fl?.ships||x.owner!==id)fail('Load troops at a friendly colony with a fleet.');const cap=fl.ships*f.blueprint.transport-fl.troops;const count=Math.min(4,f.reserves,cap);if(count<=0)fail('No reserves or available transport capacity.');spend(s,id);fl.troops+=count;f.reserves-=count;log(s,`${count} cohorts embarked at ${x.name}.`,'production');break;
+  if(s.operationalRules&&fleetCommitted(s,id,x?.id))fail('This fleet is committed to an operation. Cancel its order before loading troops.');const fl=x?.fleets[id];if(!fl?.ships||x.owner!==id)fail('Load troops at a friendly colony with a fleet.');const cap=fl.ships*f.blueprint.transport-fl.troops;const count=Math.min(4,f.reserves,cap);if(count<=0)fail('No reserves or available transport capacity.');spend(s,id);fl.troops+=count;f.reserves-=count;log(s,`${count} cohorts embarked at ${x.name}.`,'production');break;
  }
  case 'move':{
   const from=sector(s,action.from),fl=from?.fleets[id];if(!x||!fl?.ships)fail('Choose a fleet to move.');const range=f.tech.includes('drives')?2:1;if(distance(from,x)<1||distance(from,x)>range)fail(`Fleet range is ${range} hex${range>1?'es':''}.`);
@@ -120,7 +123,7 @@ export function command(state,action,id='p'){
   if(fleets(s,id).some(y=>y.fleets[id].troops>y.fleets[id].ships*b.transport))fail('Unload or deploy embarked forces before reducing transport capacity.');pay(f,{materials:2});spend(s,id);f.blueprint={...b};log(s,`${f.name} refitted its fleet blueprint.`,'production');break;
  }
  case 'invade':{
-  if(!x||x.owner===id)fail('Choose a hostile or independent defended world.');if(!x.inhabited||x.garrison<=0)fail('This world can be colonized without invasion.');if(x.orbit!==id||!x.fleets[id]?.ships)fail('Secure orbital superiority before landing.');if(x.owner&&isTreaty(s,id,x.owner))fail('A nonaggression agreement protects this world.');if(s.campaigns.some(c=>c.sector===x.id))fail('A campaign is already active here.');
+  if(s.operationalRules&&fleetCommitted(s,id,x?.id))fail('Cancel this fleet operation before committing its troops to an invasion.');if(!x||x.owner===id)fail('Choose a hostile or independent defended world.');if(!x.inhabited||x.garrison<=0)fail('This world can be colonized without invasion.');if(x.orbit!==id||!x.fleets[id]?.ships)fail('Secure orbital superiority before landing.');if(x.owner&&isTreaty(s,id,x.owner))fail('A nonaggression agreement protects this world.');if(s.campaigns.some(c=>c.sector===x.id))fail('A campaign is already active here.');
   const fl=x.fleets[id];if(fl.troops<2)fail('Embark at least 2 cohorts before launching an invasion.');pay(f,{fuel:2,credits:2});spend(s,id);
   const troops=fl.troops;fl.troops=0;const c=makeCampaign(s,x,id,troops);s.campaigns.push(c);log(s,`${f.name} landed ${troops} cohorts on ${x.name}. Planetary campaign opened.`,'battle');break;
  }
@@ -199,16 +202,16 @@ function resolveGround(s,c){
  const capital=c.tiles.find(t=>t.site==='Capital');c.capitalHeld=capital.owner==='a'?c.capitalHeld+1:0;if(capital.owner==='a')c.morale.d=Math.max(0,c.morale.d-2);const attackers=c.tiles.filter(t=>t.owner==='a').reduce((n,t)=>n+t.units,0),defenders=c.tiles.filter(t=>t.owner==='d').reduce((n,t)=>n+t.units,0);
  c.orders=[];
  if(attackers>0&&c.capitalHeld>=2&&(defenders===0||c.morale.d<=3)){
-  world.owner=c.attacker;world.occupation=2;world.garrison=Math.max(1,attackers);const f=faction(s,c.attacker);f.score+=3;if(c.attacker==='p')s.stats.conquests++;log(s,`${c.name} surrendered. Military occupation established; stabilization required.`,'success');return false;
+  world.owner=rewardConquest(s,world,c.attacker,c.defender);world.occupation=2;world.garrison=Math.max(1,attackers);const f=faction(s,c.attacker);f.score+=3;if(c.attacker==='p')s.stats.conquests++;log(s,`${c.name} surrendered. Military occupation established; stabilization required.`,'success');return false;
  }
- if(!attackers||c.morale.a<=0){world.garrison=Math.max(1,defenders);log(s,`The expedition on ${c.name} collapsed. Planetary ownership is unchanged.`,'battle');return false;}
+ if(!attackers||c.morale.a<=0){addWarStress(s,c.attacker,2,'planetary expedition lost');world.garrison=Math.max(1,defenders);log(s,`The expedition on ${c.name} collapsed. Planetary ownership is unchanged.`,'battle');return false;}
  log(s,`${c.name}, operation ${c.cycle}: ${attackers} expeditionary / ${defenders} defending formations; morale ${c.morale.a}/${c.morale.d}.`,'battle');return true;
 }
 export function planAI(state){
  let work=clone(state);const plans=[];
  for(const id of ['r','v']){
   const push=action=>{try{work=command(work,action,id);plans.push({id,action});return true;}catch{return false;}};
-  push({type:'priority',id:id==='r'?'industry':'science'});
+  push({type:'priority',id:id==='r'?'industry':'science'});if(work.operationalRules){const self=faction(work,id);push({type:'initiative',bid:Math.min(3,Math.floor(self.fuel/5)),slot:id==='r'?0:1});if(self.warStress>=4)push({type:'civilian-relief'});}
   const f=()=>faction(work,id);const own=()=>colonies(work,id);
   let built=false,researched=false;const moved=new Set();
   for(let step=0;step<5&&f().actions>0;step++){
@@ -225,6 +228,7 @@ export function planAI(state){
      const known=neighbors(work,at).filter(t=>t.owner!==id&&(!t.owner||!isTreaty(work,id,t.owner))&&!work.campaigns.some(c=>c.sector===t.id));
      const score=t=>(!t.inhabited?6:fl.troops>=t.garrison?4:-4)+(t.owner==='p'?1:0)-Object.entries(t.fleets).filter(([k])=>k!==id).reduce((n,[,v])=>n+v.ships*2,0);
      const target=known.sort((a,b)=>score(b)-score(a))[0];
+     if(work.operationalRules&&(!target||score(target)<0)&&!fleetCommitted(work,id,at.id)){const raid=neighbors(work,at).filter(t=>t.owner&&t.owner!==id&&!isTreaty(work,id,t.owner)).sort((a,b)=>b.income.materials+b.income.credits-a.income.materials-a.income.credits)[0];if(raid&&push({type:'raid-convoy',from:at.id,sector:raid.id})){acted=true;break;}}
      if(target&&score(target)>=0&&push({type:'move',from:at.id,sector:target.id})){moved.add(target.id);acted=true;break;}
     }
    }
@@ -242,10 +246,13 @@ export function planAI(state){
 export function endRound(state,plans=planAI(state)){
  let s=clone(state);if(s.result)return s;s.offers=[];
  for(const p of plans){try{s=command(s,p.action,p.id);}catch{/* Plans can become invalid after another civilization acts. */}}
+ resolveFleetOperations(s,resolveSpace,rand);
  const law=LAWS[s.agenda];let yes=0,no=0;for(const f of s.factions){const votes=Math.max(1,colonies(s,f.id).length)+(f.priority==='diplomacy'?2:0);const supports=f.id==='p'?s.vote==='for':law.id==='restraint'?f.id==='v':true;if(f.id==='p'&&s.vote===null)continue;if(supports)yes+=votes;else no+=votes;}
  s.law=yes>no?law.id:null;log(s,`${law.name}: ${yes} for / ${no} against. ${s.law?'Motion carried.':'Motion failed.'}`,'politics');
  for(let cycle=0;cycle<2;cycle++)s.campaigns=s.campaigns.filter(c=>resolveGround(s,c));
- for(const f of s.factions){const inc=income(s,f.id);f.credits+=inc.credits-inc.upkeep;f.science+=inc.science;f.materials+=inc.materials;f.fuel+=2;f.actions=5;f.priority=null;if(f.credits<0){f.credits=0;f.actions=4;}for(const x of colonies(s,f.id))if(x.occupation)x.occupation=Math.max(0,x.occupation-(f.tech.includes('civics')?2:1));}
+ finishGalacticConstruction(s);settleGalacticStability(s);
+ for(const f of s.factions){const inc=income(s,f.id);f.credits+=inc.credits-inc.upkeep;f.science+=inc.science;f.materials+=inc.materials;f.fuel+=s.operationalRules&&stressZone(f)>=2?1:2;f.actions=5-(s.operationalRules&&stressZone(f)>=3?1:0);f.priority=null;if(f.credits<0){f.credits=0;f.actions=4;}for(const x of colonies(s,f.id))if(x.occupation)x.occupation=Math.max(0,x.occupation-(f.tech.includes('civics')?2:1));}
+ if(s.operationalRules)s.transitRights=s.transitRights.filter(t=>t.until>=s.round+1);
  s.treaties=s.treaties.filter(t=>t.until>=s.round+1);
  const pf=faction(s);const objectives=[['explorer',s.stats.explored>=3,2,'Frontier cartographer'],['scholar',pf.tech.length>=3,2,'Scientific ascendancy'],['conqueror',s.stats.conquests>=1,3,'A foothold among stars'],['diplomat',s.treaties.some(t=>t.parties.includes('p')),1,'Accord of civilizations']];
  for(const [id,met,points,name]of objectives)if(met&&!s.scored.includes(id)){s.scored.push(id);pf.score+=points;log(s,`Mandate completed: ${name}. +${points} prestige.`,'success');}
@@ -273,6 +280,7 @@ export function validateSave(value){
  if(s.law!==null&&!LAWS.some(l=>l.id===s.law))fail('Invalid galactic law.');if(s.vote!==null&&!['for','against'].includes(s.vote))fail('Invalid ballot.');
  if(s.result&&(!['p','r','v'].includes(s.result.winner)||!Array.isArray(s.result.ranking)||s.result.ranking.length!==3||s.result.ranking.some(r=>!['p','r','v'].includes(r.id)||!num(r.score))))fail('Invalid campaign result.');
  if(s.offers!==undefined&&(!Array.isArray(s.offers)||s.offers.length>8||s.offers.some(o=>typeof o.id!=='string'||!['science','materials'].includes(o.resource)||!['r','v'].includes(o.from))))fail('Invalid secondary programs.');if(s.ambition!==undefined&&!['exploration','science','fleet'].includes(s.ambition))fail('Invalid private ambition.');
+ validateGalacticOperations(s);
  return clone(s);
 }
 export function encodeSave(s){return JSON.stringify({format:'galactic-imperium',version:VERSION,savedAt:new Date().toISOString(),game:s},null,2);}
