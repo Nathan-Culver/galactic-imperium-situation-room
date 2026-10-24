@@ -38,6 +38,8 @@ The main map supports touch pinch zoom from 100 to 300 percent, one-finger panni
 
 ## Verification and remaining scope
 
-82 automated tests pass, including sixteen galactic-operation integration tests and three pinch-geometry tests. They cover action/fuel accounting, bid escrow, delayed deployment, damaged/lost yards, shipping floors, escorts, recovery, transit, relays, saves, and solo campaign completion. Browser checks are recorded separately. Physical multi-touch hardware testing is still needed.
+84 automated tests pass, including eighteen galactic-operation integration tests and three pinch-geometry tests. They cover action/fuel accounting, bid escrow, delayed deployment, damaged/lost yards, shipping floors, escorts, recovery, transit, relays, saves, and solo campaign completion. Browser checks are recorded separately. Physical multi-touch hardware testing is still needed.
 
 The separate province campaign is not yet connected to the main game's invasion resolution. The main game still uses its earlier simplified galactic technology/combat/component systems and existing small-map invasions. Full source-rule catalogs, full planetary integration, and all six expanded political systems remain outstanding. Existing saved campaigns are upgraded with empty operational queues and zero stress; existing forces, resources, ownership, and invasions are preserved.
+
+Browser verification: the deployed interface loaded an existing round-two save, preserved its ongoing invasion and holdings, committed and revised initiative escrow, queued a fleet move without relocating its ships, and cancelled it with exact action/fuel refunds. Galaxy, empire, production, and diplomacy views were checked at an observed 375px viewport without document overflow. Transit was unavailable before a treaty. No console warnings or errors were captured. Physical multi-touch gestures were not available in the browser automation environment.

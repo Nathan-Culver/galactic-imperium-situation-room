@@ -24,3 +24,7 @@ Tested on the published GitHub Pages origin through the browser interface:
 ## Limits
 
 Offline reopening is implemented by a service worker but has not been verified through an actual disconnected-network session. Long-term browser eviction, all mobile operating-system download behaviors, installation on every browser, and full source-board-game rule fidelity have not been verified. See IMPLEMENTATION.md for the larger mechanics backlog.
+
+## v0.2.0 verification
+
+84 automated tests pass. New coverage includes operation commitments and cancellation refunds, initiative escrow, delayed construction, yard damage and capture, shipping floors, escort protection, relief, transit, relays, save hardening, and solo campaign completion with the new rules. The phone interface was checked at an observed 375px document width without overflow; deployed browser checks verified bid edits, movement queuing, and cancellation refunds. Physical multi-touch testing remains outstanding.

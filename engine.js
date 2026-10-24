@@ -1,4 +1,4 @@
-import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.2.0';
+import {initializeGalacticOperations,galacticOperationAction,queueShipConstruction,fleetCommitted,worldDeliveredYield,stressZone,resolveFleetOperations,finishGalacticConstruction,settleGalacticStability,rewardConquest,addWarStress,validateGalacticOperations} from './galaxy-operations.js?v=0.2.1';
 export const VERSION=1;
 export const FACTIONS=[
  {id:'p',name:'Meridian Accord',short:'ACCORD',color:'#5ed6ca',style:'Balanced explorers',bonus:'Scientific research costs 1 less.'},
@@ -94,7 +94,7 @@ export function command(state,action,id='p'){
   const reward=f.tech.includes('sensors')?3:1;f.science+=reward;log(s,`${f.name} surveyed ${x.name}: ${x.inhabited?'inhabited world; surface resistance detected':'uninhabited world; open for settlement'}. +${reward} science.`,'discovery');break;
  }
  case 'colonize':{
-  if(!x||x.owner)fail('Choose an unclaimed world.');if(x.inhabited&&x.garrison>0)fail('Defended worlds require a successful planetary invasion.');if(!x.fleets[id]?.ships)fail('A fleet must be present to establish a colony.');pay(f,{credits:3,materials:2});spend(s,id);x.owner=id;x.orbit=id;x.inhabited=true;x.garrison=2;f.score+=1;log(s,`${f.name} established a colony on ${x.name}.`,'success');break;
+  if(!x||x.owner)fail('Choose an unclaimed world.');if(x.inhabited&&x.garrison>0)fail('Defended worlds require a successful planetary invasion.');if(!x.fleets[id]?.ships)fail('A fleet must be present to establish a colony.');pay(f,{credits:3,materials:2});spend(s,id);x.owner=id;if(s.operationalRules&&!x.originalOwner)x.originalOwner=id;x.orbit=id;x.inhabited=true;x.garrison=2;f.score+=1;log(s,`${f.name} established a colony on ${x.name}.`,'success');break;
  }
  case 'build':{
   if(!x||x.owner!==id)fail('Build at one of your colonies.');if(x.occupation)fail('This world must stabilize before producing fleets.');const unit=action.unit||'ship';if(!['ship','troops','repair'].includes(unit))fail('Unknown production order.');
@@ -202,7 +202,7 @@ function resolveGround(s,c){
  const capital=c.tiles.find(t=>t.site==='Capital');c.capitalHeld=capital.owner==='a'?c.capitalHeld+1:0;if(capital.owner==='a')c.morale.d=Math.max(0,c.morale.d-2);const attackers=c.tiles.filter(t=>t.owner==='a').reduce((n,t)=>n+t.units,0),defenders=c.tiles.filter(t=>t.owner==='d').reduce((n,t)=>n+t.units,0);
  c.orders=[];
  if(attackers>0&&c.capitalHeld>=2&&(defenders===0||c.morale.d<=3)){
-  world.owner=rewardConquest(s,world,c.attacker,c.defender);world.occupation=2;world.garrison=Math.max(1,attackers);const f=faction(s,c.attacker);f.score+=3;if(c.attacker==='p')s.stats.conquests++;log(s,`${c.name} surrendered. Military occupation established; stabilization required.`,'success');return false;
+  world.owner=rewardConquest(s,world,c.attacker,c.defender);if(s.operationalRules&&!world.originalOwner)world.originalOwner=world.owner;world.occupation=2;world.garrison=Math.max(1,attackers);const f=faction(s,c.attacker);f.score+=3;if(c.attacker==='p')s.stats.conquests++;log(s,`${c.name} surrendered. Military occupation established; stabilization required.`,'success');return false;
  }
  if(!attackers||c.morale.a<=0){addWarStress(s,c.attacker,2,'planetary expedition lost');world.garrison=Math.max(1,defenders);log(s,`The expedition on ${c.name} collapsed. Planetary ownership is unchanged.`,'battle');return false;}
  log(s,`${c.name}, operation ${c.cycle}: ${attackers} expeditionary / ${defenders} defending formations; morale ${c.morale.a}/${c.morale.d}.`,'battle');return true;
