@@ -1,4 +1,4 @@
-import {newGame,command,endRound,planAI,FACTIONS,TECHS,UNITS,PRIORITIES,LAWS,faction,sector,colonies,fleets,income,distance,isTreaty,encodeSave,validateSave} from './engine.js';
+import {newGame,command,endRound,planAI,FACTIONS,TECHS,UNITS,PRIORITIES,LAWS,faction,sector,colonies,fleets,income,distance,isTreaty,encodeSave,validateSave} from './engine.js?v=0.1.1';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='galactic-imperium.v1';
@@ -6,7 +6,7 @@ function read(key,fallback){try{const v=localStorage.getItem(key);return v?JSON.
 let settings=read(KEY+'.settings',{motion:true,sound:false});
 let state;try{state=validateSave(read(KEY+'.auto',null));}catch{try{state=validateSave(read(KEY+'.backup',null));}catch{state=newGame();}}
 let view='galaxy',selected=state.sectors.find(x=>x.owner==='p')?.id||'-3,1',campaignId=null,groundSelected=null,groundType='advance',moveFrom=null,zoom=1,busy=false,tab='research',tutorialStep=0;
-let worker;try{worker=new Worker(new URL('./ai-worker.js',import.meta.url),{type:'module'});}catch{}
+let worker;try{worker=new Worker(new URL('./ai-worker.js?v=0.1.1',import.meta.url),{type:'module'});}catch{}
 const symbols={galaxy:'<circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/>',planet:'<circle cx="12" cy="12" r="7"/><ellipse cx="12" cy="12" rx="11" ry="3" transform="rotate(-25 12 12)"/>',empire:'<path d="M4 20h16M6 20V9l6-5 6 5v11M9 20v-6h6v6M4 9h16"/>',diplomacy:'<path d="m3 8 4-3 5 3 5-3 4 3-3 10-6 3-6-3Z M7 10l5 4 5-4M12 14v7"/>',journal:'<path d="M5 3h14v18H5ZM8 7h8M8 11h8M8 15h5"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="m10 2 4 0 1 3 3 1 3 0 1 4-2 2v3l1 3-3 3-3-1h-3l-2 2-4-1 0-3-1-3-3-1V10l3-1 1-3 0-3Z"/>',save:'<path d="M4 3h13l4 4v14H3V3ZM7 3v6h9V3M7 21v-8h10v8"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 4 3c-1 .5-1 1-1 3M12 18h.01"/>',arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>',chevron:'<path d="m9 5 7 7-7 7"/>',ship:'<path d="m12 2 5 9 4 7-9-3-9 3 4-7Zm0 13v7"/>',check:'<path d="m5 12 4 4L19 6"/>',close:'<path d="m6 6 12 12M6 18 18 6"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',upload:'<path d="M12 16V4m-5 5 5-5 5 5M4 16v5h16v-5"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v5m0 12v5M1 12h5m12 0h5"/>',credits:'<circle cx="12" cy="12" r="8"/><path d="M15 8H10a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H9M12 6v12"/>',science:'<path d="M9 3h6M10 3v6L4 19q-1 2 2 2h12q3 0 2-2L14 9V3M7 15h10"/>',materials:'<path d="m12 2 9 5v10l-9 5-9-5V7Zm-9 5 9 5 9-5M12 12v10"/>',fuel:'<path d="M12 2S4 11 4 15a8 8 0 0 0 16 0c0-4-8-13-8-13Z"/>',orders:'<path d="m4 7 3 3 5-6M4 17l3 3 5-6M14 8h7m-7 10h7"/>',plus:'<path d="M12 4v16M4 12h16"/>',minus:'<path d="M4 12h16"/>',reset:'<path d="M4 9a8 8 0 1 1 0 7M4 3v6h6"/>'};
 function icon(name,cls=''){return `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${symbols[name]||symbols.target}</svg>`;}
 function btn(label,action,opts={}){return `<button class="btn ${opts.primary?'primary':''} ${opts.small?'small':''} ${opts.danger?'danger':''}" data-action="${action}" ${opts.data||''} ${opts.disabled?'disabled':''}>${opts.icon?icon(opts.icon):''}${label}</button>`;}
@@ -91,4 +91,4 @@ document.addEventListener('submit',e=>{e.preventDefault();const data=new FormDat
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&moveFrom){moveFrom=null;render();}});
 window.addEventListener('pagehide',()=>{try{localStorage.setItem(KEY+'.auto',encodeSave(state));}catch{}});
 render();
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js?v=0.1.1',{updateViaCache:'none'}).catch(()=>{});
