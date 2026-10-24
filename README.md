@@ -1,2 +1,43 @@
-# galactic-imperium-situation-room
-Galactic Imperium: The Situation Room — a mobile-first solo browser strategy game with persistent planetary invasions and local saves.
+# Galactic Imperium: The Situation Room
+
+A mobile-first, installable, static browser strategy game. Original interface and sci-fi setting, with a playable solo campaign connecting a modular galaxy to persistent planetary invasions.
+
+## Run
+
+Requires Node.js 20 or newer for the development server and tests. The deployed game needs only a modern browser.
+
+```
+node server.mjs
+```
+
+Open http://127.0.0.1:4173. No package installation, build step, remote API, account, or paid service is required.
+
+```
+node --test tests/*.test.mjs
+```
+
+## Play
+
+1. Adopt a strategic priority.
+2. At Meridian Prime, embark troops. Move the fleet to adjacent Pelagos.
+3. Launch an invasion. Open Theatres.
+4. Select the friendly formation at the port, select Advance, then select an adjacent hex toward the capital.
+5. Resolve the round. Rival civilizations act and two surface operations execute.
+6. Continue the campaign, research, reinforce, negotiate, and pursue mandates.
+7. Hold the capital for two surface operations and defeat resistance to establish occupation.
+
+Each new round refreshes five galactic actions. Surface orders have a separate per-campaign limit. Research and fleet refits compete with construction and movement for actions. Final prestige includes earned points, secure planets, and technology.
+
+## Saving and offline use
+
+Autosave, a rolling backup, three manual slots, and settings are stored in this browser's localStorage. Export a JSON save to preserve it independently of browser data. Import validates the format before replacing the current campaign. Save files stay on the device unless the player shares them.
+
+The service worker caches the static application for offline reopening after one successful online load. Browsers may evict site storage: exported files are the durable, portable option. Installation depends on browser support. There is no cloud synchronization or telemetry.
+
+## Hosting
+
+The root of this repository is the publish directory. GitHub Pages can serve it directly from the main branch, root folder. All application paths are relative, including worker, manifest, service worker, and icon paths; repository subpaths are supported.
+
+## Scope
+
+This is a playable alpha, not a verified reproduction of every rule in its board-game inspirations. Read docs/IMPLEMENTATION.md for a candid feature inventory and remaining work. No source-game artwork, text, or third-party assets are bundled. The original vector artwork and interface are local assets. The UI direction references TCG Arena's dark navy surfaces, coral accents, compact navigation, and bold hierarchy.
