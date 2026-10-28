@@ -215,9 +215,9 @@ function resolveGround(s,c){
  if(!attackers||c.morale.a<=0){addWarStress(s,c.attacker,2,'planetary expedition lost');world.garrison=Math.max(1,defenders);log(s,`The expedition on ${c.name} collapsed. Planetary ownership is unchanged.`,'battle');return false;}
  log(s,`${c.name}, operation ${c.cycle}: ${attackers} expeditionary / ${defenders} defending formations; morale ${c.morale.a}/${c.morale.d}.`,'battle');return true;
 }
-export function planAI(state){
+export function planAI(state,ids=['r','v']){
  let work=clone(state);const plans=[];
- for(const id of ['r','v']){
+ for(const id of ids){
   const push=action=>{try{work=command(work,action,id);plans.push({id,action});return true;}catch{return false;}};
   push({type:'priority',id:id==='r'?'industry':'science'});if(work.operationalRules){const self=faction(work,id);push({type:'initiative',bid:Math.min(3,Math.floor(self.fuel/5)),slot:id==='r'?0:1});if(self.warStress>=4)push({type:'civilian-relief'});}
   const f=()=>faction(work,id);const own=()=>colonies(work,id);
